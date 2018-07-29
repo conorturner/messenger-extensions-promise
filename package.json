@@ -2,9 +2,11 @@
   "name": "messenger-extensions-promise",
   "version": "0.0.2",
   "description": "Promise wrapper for facebook messenger extensions sdk",
-  "main": "index.js",
+  "main": "./build/index.js",
+  "browser": "./build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cross-env BABEL_ENV=browser babel ./src --out-dir ./build --source-maps --copy-files"
   },
   "keywords": [
     "messenger",
@@ -13,5 +15,10 @@
     "facebook"
   ],
   "author": "Conor Turner",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "cross-env": "^5.2.0"
+  }
 }
