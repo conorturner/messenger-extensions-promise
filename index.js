@@ -1,16 +1,17 @@
 const getSdk = Symbol("getSdk");
 const initSdk = Symbol("initSdk");
+const initPromise = Symbol.for("initPromise"); // hides value but also allows for debugging if needed.
 
 export default class MessengerExtensions {
 
 	constructor({ timeout }) {
-		this.initPromise = this[initSdk](timeout);
+		this[initPromise] = this[initSdk](timeout);
 	}
 
 	[initSdk](timeout){
 		this.isLoaded = false;
 
-		const initPromise = new Promise((resolve) => {
+		const promise = new Promise((resolve) => {
 
 			window.extAsyncInit = () => { // the Messenger Extensions JS SDK is done loading
 				const { MessengerExtensions: sdk } = window;
@@ -32,16 +33,16 @@ export default class MessengerExtensions {
 
 		if (timeout) {
 			 return Promise.race([
-				initPromise,
+				promise,
 				new Promise((resolve, reject) => setTimeout(() => reject(`extAsyncInit reached timeout of ${timeout}ms`), timeout))
 			]);
 		}
-		else return initPromise;
+		else return promise;
 	}
 
 	[getSdk]() {
 		if (this.isLoaded) return Promise.resolve(this.sdk);
-		else return this.initPromise;
+		else return this[initPromise];
 	}
 
 	getContext(app_id) {
